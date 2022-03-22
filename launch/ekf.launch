@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<launch>
+  <arg name="covariance"/>
+  <arg name="bag_file"/>
+  <arg name="optional_rosbag_args" default=""/>
+  <param name="use_sim_time" value="true"/>
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_state_estimator" clear_params="true">
+    <rosparam command="load" file="$(find rov_navigation)/params/ekf_params.yaml" />
+  </node>
+  <node pkg="rosbag" type="play" name="playback" args="--bags $(arg bag_file) --clock --pause $(arg optional_rosbag_args)"/>
+  <node pkg="rov_navigation" type="republish_depth_as_pose" name="depth2pose">
+      <remap from="depth" to="/bluerov2/mavros/scaled_pressure2/depth"/>
+      <remap from="pose" to="/bluerov2/mavros/scaled_pressure2/depth/pose"/>
+      <param name="frame_id" value="bluerov2/map_ned"/>
+      <param name="depth_covariance" value="$(arg covariance)"/>
+  </node>
+</launch>
