@@ -30,11 +30,11 @@ source $HOME/.bashrc
 
 ### Introduction ###
 
-[robot\_localization](http://wiki.ros.org/robot_localization) is a package that provides two types of state estimator built interfacing within ROS: an Extended Kalman Filter (EKF) and an Unscented Kalman Filter (UKF).
+[robot\_localization](http://wiki.ros.org/robot_localization) is a package that provides two types of state estimator made for interfacing within ROS: an Extended Kalman Filter (EKF) and an Unscented Kalman Filter (UKF).
 
 This package provides a launch file, called [ekf.launch](launch/ekf.launch), that plays back a .bag file and launches an EKF node to perform state estimation on sensor measurements stored in the bag. The EKF node uses [ekf\_params.yaml](params/ekf_params.yaml) to configure the EKF node. The EKF node is very flexible in its configuration, you can add as many Odometry, Imu, TwistWithCovarianceStamped and PoseWithCovarianceStamped as you like. The description of how to do this is provided in the [documentation for robot\_localization](http://docs.ros.org/en/melodic/api/robot_localization/html/configuring_robot_localization.html), but the basic configuration has been setup in the ekf\_params.yaml file.
 
-The goal for this lesson is to try to fuse the sensor measurements provided by the ROV to obtain a state estimate that is comparable to the estimate made by the EKF onboard the Flight Controller Unit, exposed as an Odometry topic through MAVROS, called `/bluerov2/mavros/global\_position/local`.
+The goal for this lesson is to try to fuse the sensor measurements provided by the ROV to obtain a state estimate that is comparable to the estimate made by the EKF onboard the Flight Controller Unit, exposed as an Odometry topic through MAVROS, called `/bluerov2/mavros/global_position/local`.
 
 ### Sensor Feedback ###
 
@@ -47,6 +47,7 @@ Depending on what .bag dataset you are using, you may have access to different t
 **/bluerov2/mavros/imu/mag**: The raw magnetometer measurements.
 
 NOTE: The IMU reports a covariance, but this is not provided by the FCU, it is specified within the MAVROS parameters by the user, so it might not be correct (in fact, the reported magnetometer covariance is an identity matrix, which is very unlikely to be correct. If you want to specify your own covariance, then you will need to make a node that subscribes to the topic in question and publish a new topic with the covariance overwritten. This topic should then be specified within the ekf\_params.yaml file. See [this node](nodes/republish_depth_as_pose) for an example of how to republish a topic as a **Pose/Twist**WithCovarianceStamped topic with a specified covariance.
+
 
 **/bluerov2/mavros/scaled\_pressure2/depth**: The depth estimate calculated from the pressure sensor absolute pressure reading, assumed with a seawater density of 1024 kg/m³ and gravitational acceleration constant of 9.81 m/s².
 
